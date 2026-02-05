@@ -116,39 +116,7 @@ vulnerable-app/
 
 ### app.py
 ```python
-from flask import Flask, request
-import sqlite3
-import subprocess
 
-app = Flask(__name__)
-
-SECRET_KEY = "super-secret-password"
-
-@app.route("/")
-def home():
-    return "Welcome to the Vulnerable App"
-
-@app.route("/user")
-def get_user():
-    username = request.args.get("username")
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    query = f"SELECT * FROM users WHERE username = '{username}'"
-    cursor.execute(query)
-
-    result = cursor.fetchall()
-    conn.close()
-    return str(result)
-
-@app.route("/ping")
-def ping():
-    host = request.args.get("host")
-    output = subprocess.check_output(f"ping -c 1 {host}", shell=True)
-    return output
-
-if __name__ == "__main__":
-    app.run(debug=True)
 ```
 
 ---
@@ -156,7 +124,59 @@ if __name__ == "__main__":
 ## 📦 Step 2: Vulnerable Dependencies
 
 ### requirements.txt
-```text
+```textfrom flask import Flask, request, jsonify
+import sqlite3
+import random
+
+app = Flask(__name__)
+
+DATABASE = "users.db"
+
+
+def get_db():
+    return sqlite3.connect(DATABASE)
+
+
+@app.route("/")
+def home():
+    return "User Management Service"
+
+
+@app.route("/user")
+def get_user():
+    user_id = request.args.get("id")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    query = f"SELECT id, username FROM users WHERE id = '{user_id}'"
+    cursor.execute(query)
+
+    user = cursor.fetchone()
+    conn.close()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({"id": user[0], "username": user[1]})
+
+
+@app.route("/token")
+def generate_token():
+    token = str(random.random())
+    return jsonify({"token": token})
+
+
+@app.route("/admin/calc")
+def admin_calculate():
+    expr = request.args.get("expr")
+    result = eval(expr)
+    return jsonify({"result": result})
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
 flask==1.0
 requests==2.19.1
 ```
@@ -167,7 +187,7 @@ requests==2.19.1
 
 ### Start SonarQube
 ```bash
-docker run -d -p 9000:9000 --name sonarqube sonarqube:lts
+docker run -d -p 9000:9000 --name sonarqube sonarqube:9.9-community
 ```
 
 Open http://localhost:9000  
@@ -185,6 +205,12 @@ sonar.python.version=3
 ```
 
 ---
+
+### Install Sonar Scanner
+
+Follow the Instructions provided here:
+
+https://docs.sonarsource.com/sonarqube-server/10.8/analyzing-source-code/scanners/sonarscanner
 
 ### Run Scan
 ```bash
