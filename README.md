@@ -71,34 +71,33 @@
 
 ## Day 5: Kubernetes Security
 
-**Focus**: TBD
+**Focus**: 
+ 
+- Namespaces
+- RBAC
+- Network Policies
+- Kyverno
+- Secrets
+- External Secrets Operator
 
-### Concepts:
-- TBD
-
-### Tool Spotlight:
-- TBD
-
-### Hands-on Lab:
-- TBD
 ---
 
-## Day 6: Dynamic Testing (DAST) & API Security
-
+## Day 6: SAST, SCA and DAST
 **Focus**: Testing the running application for real-world exploits.
 
 ### Concepts:
+- **SAST**
+- **SCA**
 - **DAST** (Dynamic Application Security Testing): Attacking the app like a hacker
-- OWASP Top 10 (2026 Updates): Injection, Broken Access Control, etc.
-- Securing REST & GraphQL APIs
+
 
 ### Tool Spotlight:
+- SonarQube
 - OWASP ZAP (Automation)
-- StackHawk
 
 ### Hands-on Lab:
-- Run an automated ZAP baseline scan against a running staging environment
-- Generate a PDF report
+- Run an automated ZAP baseline scan against a Python application
+- Run SAST and SCA against a Python application
 
 ---
 
